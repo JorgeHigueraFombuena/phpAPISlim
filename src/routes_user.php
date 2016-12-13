@@ -33,6 +33,7 @@ $app->get(
     '/users/{id:[0-9]+}',
     function ($request, $response, $args) {
         $this->logger->info('GET \'/users/' . $args['id'] . '\'');
+        $this->logger->info('GET \'/users/' . $args['id'] . '\' : id = ' . $args['id']);
         $usuario = getEntityManager()
             ->getRepository('MiW16\Results\Entity\User')
             ->findOneById($args['id']);
@@ -57,6 +58,7 @@ $app->delete(
     '/users/{id:[0-9]+}',
     function ($request, $response, $args) {
         $this->logger->info('DELETE \'/users/' . $args['id'] . '\'');
+        $this->logger->info('DELETE \'/users/' . $args['id'] . '\' : id = ' . $args['id']);
         $em = getEntityManager();
         $usuario = $em
             ->getRepository('MiW16\Results\Entity\User')
@@ -101,6 +103,10 @@ $app->post(
     function ($request, $response, $args) {
         $this->logger->info('POST \'/users\'');
         $data = json_decode($request->getBody(), true); // parse the JSON into an assoc. array
+        ob_start();
+        var_dump($data);
+        $dataDump = ob_end_clean();
+        $this->logger->info('POST \'/users\' : data = ' . $dataDump);
         // process $data...
 
         // TODO
@@ -116,7 +122,12 @@ $app->put(
     '/users/{id:[0-9]+}',
     function ($request, $response, $args) {
         $this->logger->info('PUT \'/users\'');
+        $this->logger->info('PUT \'/users/' . $args['id'] . '\' : id = ' . $args['id']);
         $data = json_decode($request->getBody(), true); // parse the JSON into an assoc. array
+        ob_start();
+        var_dump($data);
+        $dataDump = ob_end_clean();
+        $this->logger->info('PUT \'/users\' : data = ' . $dataDump);
         // process $data...
 
         // TODO
