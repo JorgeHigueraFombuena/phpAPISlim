@@ -3,27 +3,6 @@
 use Swagger\Annotations as SWG;
 
 /**
- * Summary: Returns all users
- * Notes: Returns all users from the system that the user has access to.
- *
- * @SWG\Get(
- *     method      = "GET",
- *     path        = "/users",
- *     tags        = { "Users" },
- *     summary     = "Returns all users",
- *     description = "Returns all users from the system that the user has access to.",
- *     operationId = "miw_cget_users",
- *     @SWG\Response(
- *          response    = 200,
- *          description = "User array response",
- *          schema      = { "$ref": "#/definitions/UsersArray" }
- *     ),
- *     @SWG\Response(
- *          response    = 404,
- *          description = "User object not found",
- *          schema      = { "$ref": "#/definitions/Message" }
- *     )
- * )
  * @var \Slim\App $app
  */
 $app->get(
@@ -48,30 +27,7 @@ $app->get(
 )->setName('miw_cget_users');
 
 /**
- * Summary: Returns a user based on a single ID
- * Notes: Returns the user identified by &#x60;userId&#x60;.
- *
- * @SWG\Get(
- *     method      = "GET",
- *     path        = "/users/{userId}",
- *     tags        = { "Users" },
- *     summary     = "Returns a user based on a single ID",
- *     description = "Returns the user identified by `userId`.",
- *     operationId = "miw_get_users",
- *     parameters  = {
- *          { "$ref" = "#/parameters/userId" }
- *     },
- *     @SWG\Response(
- *          response    = 200,
- *          description = "User",
- *          schema      = { "$ref": "#/definitions/User" }
- *     ),
- *     @SWG\Response(
- *          response    = 404,
- *          description = "User id. not found",
- *          schema      = { "$ref": "#/definitions/Message" }
- *     )
- * )
+ * @var \Slim\App $app
  */
 $app->get(
     '/users/{id:[0-9]+}',
@@ -95,29 +51,7 @@ $app->get(
 )->setName('miw_get_users');
 
 /**
- * Summary: Deletes a user
- * Notes: Deletes the user identified by &#x60;userId&#x60;.
- *
- * @SWG\Delete(
- *     method      = "DELETE",
- *     path        = "/users/{userId}",
- *     tags        = { "Users" },
- *     summary     = "Deletes a user",
- *     description = "Deletes the user identified by `userId`.",
- *     operationId = "miw_delete_users",
- *     parameters={
- *          { "$ref" = "#/parameters/userId" }
- *     },
- *     @SWG\Response(
- *          response    = 204,
- *          description = "User deleted &lt;Response body is empty&gt;"
- *     ),
- *     @SWG\Response(
- *          response    = 404,
- *          description = "User not found",
- *          schema      = { "$ref": "#/definitions/Message" }
- *     )
- * )
+ * @var \Slim\App $app
  */
 $app->delete(
     '/users/{id:[0-9]+}',
@@ -144,21 +78,7 @@ $app->delete(
 )->setName('miw_delete_users');
 
 /**
- * Summary: Provides the list of HTTP supported methods
- * Notes: Return a &#x60;Allow&#x60; header with a list of HTTP supported methods.
- *
- * @SWG\Options(
- *     method      = "OPTIONS",
- *     path        = "/users",
- *     tags        = { "Users" },
- *     summary     = "Provides the list of HTTP supported methods",
- *     description = "Return a `Allow` header with a list of HTTP supported methods.",
- *     operationId = "miw_options_users",
- *     @SWG\Response(
- *          response    = 200,
- *          description = "`Allow` header &lt;Response body is empty&gt;",
- *     )
- * )
+ * @var \Slim\App $app
  */
 $app->options(
     '/users',
