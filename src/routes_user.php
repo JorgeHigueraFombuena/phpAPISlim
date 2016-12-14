@@ -118,10 +118,17 @@ $app->post(
         var_dump($data);
         $dataDump = ob_end_clean();
         $this->logger->info('POST \'/users\' : data = ' . $dataDump);
-        // process $data...
 
-        // TODO
-        $newResponse = $response->withStatus(501);
+        /** @var \MiW16\Results\Entity\User $usuario */
+        $usuario = new \MiW16\Results\Entity\User();
+        $usuario->setUsername($data['username']);
+        $usuario->setEmail($data['email']);
+        $usuario->setPassword($data['password']);
+        //var_dump($usuario);
+        $em = getEntityManager();
+        $em->persist($usuario);
+        $em->flush();
+        $newResponse = $response->withStatus(201);
         return $newResponse;
     }
 )->setName('miw_post_users');
@@ -139,10 +146,29 @@ $app->put(
         var_dump($data);
         $dataDump = ob_end_clean();
         $this->logger->info('PUT \'/users\' : data = ' . $dataDump);
-        // process $data...
+        $em = getEntityManager();
+        /** @var \MiW16\Results\Entity\User $usuario */
+        $usuario = $em
+            ->getRepository('MiW16\Results\Entity\User')
+            ->findOneById($args['id']);
 
-        // TODO
-        $newResponse = $response->withStatus(501);
+        if (empty($usuario)) {  // 404 - User id. not found
+            $newResponse = $response->withStatus(404);
+            $datos = array(
+                'code' => 404,
+                'message' => 'User not found'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        } else {
+            $usuario->setUsername($data['username']);
+            $usuario->setEnabled($data['enabled'] === 'true');
+            $usuario->setPassword($data['password']);
+            $usuario->setEmail($data['email']);
+            $usuario->setToken($data['token']);
+            $em->persist($usuario);
+            $em->flush();
+        }
+        $newResponse = $response->withStatus(200);
         return $newResponse;
     }
 )->setName('miw_post_users');
