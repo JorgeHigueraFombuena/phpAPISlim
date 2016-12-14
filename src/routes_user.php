@@ -58,12 +58,23 @@ $app->delete(
     '/users/{id:[0-9]+}',
     function ($request, $response, $args) {
         $this->logger->info('DELETE \'/users/' . $args['id'] . '\'');
-        $this->logger->info('DELETE \'/users/' . $args['id'] . '\' : id = ' . $args['id']);
         $em = getEntityManager();
         $usuario = $em
             ->getRepository('MiW16\Results\Entity\User')
             ->findOneById($args['id']);
-        if (empty($usuario)) {  // 404 - User id. not found
+
+        $result = getEntityManager()
+            ->getRepository('MiW16\Results\Entity\Result')
+            ->findOneBy(array("user" => $args['id']));
+        if (!empty($result)){
+            $newResponse = $response->withStatus(403);
+            $datos = array (
+                'code' => 403,
+                'message' => 'User has result. The result must be deleted before'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        }
+        else if (empty($usuario)) {  // 404 - User id. not found
             $newResponse = $response->withStatus(404);
             $datos = array(
                 'code' => 404,

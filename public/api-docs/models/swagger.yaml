@@ -237,6 +237,10 @@ paths:
           description: User not found
           schema:
             $ref: '#/definitions/Message'
+        '403':
+          description: User has result. The result must be deleted before
+          schema:
+            $ref: '#/definitions/Message'
 definitions:
   Result:
     required:
