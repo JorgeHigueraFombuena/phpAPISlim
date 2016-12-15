@@ -81,6 +81,7 @@ class User implements \JsonSerializable
         $this->username = '';
         $this->email = '';
         $this->enabled = false;
+        $this->lastLogin = new \DateTime('1970-01-01 00:00:00');
         $this->token = sha1(uniqid('', true));
     }
 
@@ -229,6 +230,7 @@ class User implements \JsonSerializable
             'username'      => utf8_encode($this->username),
             'email'         => utf8_encode($this->email),
             'enabled'       => $this->enabled,
+            'last_login'    => $this->lastLogin->format('Y-m-d H:i:s'),
             'token'         => $this->token
         );
     }

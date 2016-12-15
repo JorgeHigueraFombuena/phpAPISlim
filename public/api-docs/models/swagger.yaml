@@ -47,8 +47,6 @@ paths:
       responses:
         '201':
           description: '`Created` Result created'
-          schema:
-            $ref: '#/definitions/ResultData'
         '400':
           description: '`Bad Request` Bad data given.'
           schema:
@@ -101,8 +99,6 @@ paths:
       responses:
         '200':
           description: '`Ok` User previously existed and is now updated'
-          schema:
-            $ref: '#/definitions/ResultData'
         '400':
           description: '`Bad Request` User name or e-mail already exists'
           schema:
@@ -158,8 +154,6 @@ paths:
       responses:
         '201':
           description: '`Created` User created'
-          schema:
-            $ref: '#/definitions/UserData'
         '400':
           description: '`Bad Request` Username or email already exists.'
           schema:
@@ -212,8 +206,6 @@ paths:
       responses:
         '200':
           description: '`Ok` User previously existed and is now updated'
-          schema:
-            $ref: '#/definitions/User'
         '400':
           description: '`Bad Request` User name or e-mail already exists'
           schema:
@@ -262,7 +254,7 @@ definitions:
       result: 10
       user:
         $ref: '#/definitions/UserAux/example'
-      time: 2016-12-23 12:30:30.000000
+      time: 2016-12-23 12:30:30
   ResultData:
     properties:
       id:
@@ -288,7 +280,7 @@ definitions:
         id: 123
         username: User_name
         email: User_email@example.com
-      time: 2016-12-23 12:30:30.000000
+      time: 2016-12-23 12:30:30
   ResultsArray:
     properties:
       results:
@@ -327,11 +319,13 @@ definitions:
       email:
         description: User email
         type: string
-      password:
-        description: User password
       enabled:
         description: Denotes if user is enabled
         type: boolean
+      last_login:
+        description: Last login of the user
+        type: string
+        format: date
       token:
         description: User token
         type: string
@@ -339,8 +333,8 @@ definitions:
       id: 123
       username: User_name
       email: User_email@example.com
-      password: userpassword
       enabled: true
+      last_login: 2016-12-23 12:30:30
       token: $2$6a7f5b9e15f9c4a51495
   UserAux:
     required:

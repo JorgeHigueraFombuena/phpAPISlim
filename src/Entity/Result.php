@@ -156,7 +156,7 @@ class Result implements \JsonSerializable
             'id'     => $this->id,
             'result' => $this->result,
             'user'   => $this->user,
-            'time'   => $this->time
+            'time'   => $this->time->format('Y-m-d H:i:s')
         );
     }
 }

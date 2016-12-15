@@ -21,7 +21,7 @@ $app->get(
             );
             return $this->renderer->render($newResponse, 'message.phtml', $datos);
         }
-
+        var_dump($usuarios);
         return $response->withJson(array('users' => $usuarios));
     }
 )->setName('miw_cget_users');
@@ -124,7 +124,6 @@ $app->post(
         $usuario->setUsername($data['username']);
         $usuario->setEmail($data['email']);
         $usuario->setPassword($data['password']);
-        //var_dump($usuario);
         $em = getEntityManager();
         $em->persist($usuario);
         $em->flush();
@@ -142,10 +141,6 @@ $app->put(
         $this->logger->info('PUT \'/users\'');
         $this->logger->info('PUT \'/users/' . $args['id'] . '\' : id = ' . $args['id']);
         $data = json_decode($request->getBody(), true); // parse the JSON into an assoc. array
-        ob_start();
-        var_dump($data);
-        $dataDump = ob_end_clean();
-        $this->logger->info('PUT \'/users\' : data = ' . $dataDump);
         $em = getEntityManager();
         /** @var \MiW16\Results\Entity\User $usuario */
         $usuario = $em
@@ -165,6 +160,7 @@ $app->put(
             $usuario->setPassword($data['password']);
             $usuario->setEmail($data['email']);
             $usuario->setToken($data['token']);
+            $usuario->setLastLogin(new DateTime($data['last_login']));
             $em->persist($usuario);
             $em->flush();
         }
