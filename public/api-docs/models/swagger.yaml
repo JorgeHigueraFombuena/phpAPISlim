@@ -43,12 +43,12 @@ paths:
           description: '`Result` properties to add to the system'
           required: true
           schema:
-            $ref: '#/definitions/ResultData'
+            $ref: '#/definitions/Result'
       responses:
         '201':
           description: '`Created` Result created'
           schema:
-            $ref: '#/definitions/Result'
+            $ref: '#/definitions/ResultData'
         '400':
           description: '`Bad Request` Bad data given.'
           schema:
@@ -79,7 +79,7 @@ paths:
         '200':
           description: Result
           schema:
-            $ref: '#/definitions/Result'
+            $ref: '#/definitions/ResultData'
         '404':
           description: Result id. not found
           schema:
@@ -102,7 +102,7 @@ paths:
         '200':
           description: '`Ok` User previously existed and is now updated'
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/ResultData'
         '400':
           description: '`Bad Request` User name or e-mail already exists'
           schema:
@@ -154,12 +154,12 @@ paths:
           description: '`User` properties to add to the system'
           required: true
           schema:
-            $ref: '#/definitions/UserData'
+            $ref: '#/definitions/User'
       responses:
         '201':
           description: '`Created` User created'
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/UserData'
         '400':
           description: '`Bad Request` Username or email already exists.'
           schema:
@@ -190,7 +190,7 @@ paths:
         '200':
           description: User
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/UserData'
         '404':
           description: User id. not found
           schema:
@@ -244,34 +244,24 @@ paths:
 definitions:
   Result:
     required:
-      - id
       - result
       - user
       - time
     properties:
-      id:
-        description: Result Id
-        type: integer
-        format: int32
       result:
         description: Result value
         type: integer
         format: int32
       user:
-        $ref: '#/definitions/User'
+        $ref: '#/definitions/UserAux'
       time:
         description: Date of result
         type: string
         format: date
     example:
-      id: 1
       result: 10
       user:
-        id: 1508
-        username: User name
-        email: User email
-        enabled: true
-        token: $2$6a7f5b9e15f9c4a51495
+        $ref: '#/definitions/UserAux/example'
       time: 2016-12-23 12:30:30.000000
   ResultData:
     properties:
@@ -284,7 +274,9 @@ definitions:
         type: integer
         format: int32
       user:
-        $ref: '#/definitions/UserData'
+        id: 123
+        username: User_name
+        email: User_email@example.com
       time:
         description: Date of result
         type: string
@@ -293,20 +285,64 @@ definitions:
       id: 1
       result: 10
       user:
+        id: 123
         username: User_name
         email: User_email@example.com
-        password: User_password
-        enabled: true
-        token: $2$6a7f5b9e15f9c4a51495
-        time: 2016-12-23 12:30:30.000000
+      time: 2016-12-23 12:30:30.000000
   ResultsArray:
     properties:
       results:
         description: Results array
         type: array
         items:
-          $ref: '#/definitions/Result'
+          $ref: '#/definitions/ResultData'
   User:
+    required:
+      - username
+      - email
+      - password
+    properties:
+      username:
+        description: User name
+        type: string
+      email:
+        description: User email
+        type: string
+      password:
+        description: User password
+        type: string
+    example:
+      username: User name
+      email: email@email.com
+      password: password
+  UserData:
+    properties:
+      id:
+        description: User Id
+        type: integer
+        format: int32
+      username:
+        description: User name
+        type: string
+      email:
+        description: User email
+        type: string
+      password:
+        description: User password
+      enabled:
+        description: Denotes if user is enabled
+        type: boolean
+      token:
+        description: User token
+        type: string
+    example:
+      id: 123
+      username: User_name
+      email: User_email@example.com
+      password: userpassword
+      enabled: true
+      token: $2$6a7f5b9e15f9c4a51495
+  UserAux:
     required:
       - id
       - username
@@ -322,49 +358,17 @@ definitions:
       email:
         description: User email
         type: string
-      token:
-        description: API access token
-        type: string
-      enabled:
-        description: Denotes if user is enabled
-        type: boolean
     example:
-      id: 1508
-      username: User name
-      email: User email
-      enabled: true
-      token: $2$6a7f5b9e15f9c4a51495
-  UserData:
-    properties:
-      username:
-        description: User name
-        type: string
-      email:
-        description: User email
-        type: string
-      password:
-        description: User password
-        type: string
-        format: password
-      enabled:
-        description: Denotes if user is enabled
-        type: boolean
-      token:
-        description: User token
-        type: string
-    example:
+      id: 123
       username: User_name
       email: User_email@example.com
-      password: User_password
-      enabled: true
-      token: $2$6a7f5b9e15f9c4a51495
   UsersArray:
     properties:
       users:
         description: Users array
         type: array
         items:
-          $ref: '#/definitions/User'
+          $ref: '#/definitions/UserData'
   Message:
     required:
       - code
