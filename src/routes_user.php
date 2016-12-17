@@ -125,6 +125,14 @@ $app->post(
             );
             return $this->renderer->render($newResponse, 'message.phtml', $datos);
         }
+        else if(strpos($data['email'],'@') === false){
+            $newResponse = $response->withStatus(400);
+            $datos = array (
+                'code' => 400,
+                'message' => '`Bad Request` Username or email already exists.'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        }
         else{
             $usuarioUsername = $em
                 ->getRepository('MiW16\Results\Entity\User')

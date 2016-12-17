@@ -107,14 +107,34 @@ $app->post(
     function ($request, $response, $args) {
         $this->logger->info('POST \'/results\'');
         $data = json_decode($request->getBody(), true); // parse the JSON into an assoc. array
-        ob_start();
-        var_dump($data);
-        $dataDump = ob_end_clean();
-        $this->logger->info('POST \'/results\' : data = ' . $dataDump);
-        // process $data...
-
-        // TODO
-        $newResponse = $response->withStatus(501);
+        $em = getEntityManager();
+        $usuario = $em
+            ->getRepository('MiW16\Results\Entity\User')
+            ->findOneById($data['user']['id']);
+        if (
+            empty($usuario)
+            || !isset($data['result'])
+            || !isset($data['time'])
+        ) {
+            $newResponse = $response->withStatus(422);
+            $datos = array(
+                'code' => 422,
+                'message' => '`Unprocessable entity` Some data requiered is missed'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        } else if (empty(new DateTime($data['time']))) {
+            $newResponse = $response->withStatus(400);
+            $datos = array(
+                'code' => 400,
+                'message' => '`Bad Request` Bad data given.'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        }
+        /** @var \MiW16\Results\Entity\Result $result */
+        $result = new \MiW16\Results\Entity\Result(intval($data['result']), $usuario, new DateTime($data['time']));
+        $em->persist($result);
+        $em->flush();
+        $newResponse = $response->withStatus(201);
         return $newResponse;
     }
 )->setName('miw_post_results');
@@ -128,15 +148,57 @@ $app->put(
         $this->logger->info('PUT \'/results\'');
         $this->logger->info('PUT \'/results/' . $args['id'] . '\' : id = ' . $args['id']);
         $data = json_decode($request->getBody(), true); // parse the JSON into an assoc. array
-        ob_start();
-        var_dump($data);
-        $dataDump = ob_end_clean();
-        $this->logger->info('PUT \'/results\' : data = ' . $dataDump);
-        // process $data...
+        $em = getEntityManager();
+        /** @var \MiW16\Results\Entity\Result $result */
+        $result = $em
+            ->getRepository('MiW16\Results\Entity\Result')
+            ->findOneById($args['id']);
 
-        // TODO
-        $newResponse = $response->withStatus(501);
+        if (empty($result)) {  // 404 - User id. not found
+            $newResponse = $response->withStatus(404);
+            $datos = array(
+                'code' => 404,
+                'message' => 'Result not found'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        } else if (!isset($data['result'])
+            || !isset($data['user'])
+            || !isset($data['time'])
+        ) {
+            $newResponse = $response->withStatus(422);
+            $datos = array(
+                'code' => 422,
+                'message' => '`Unprocessable entity` Some data requiered is missed'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        } else if (empty(new DateTime($data['time']))) {
+            $newResponse = $response->withStatus(400);
+            $datos = array(
+                'code' => 400,
+                'message' => '`Bad Request` Bad format of date.'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        } else {
+
+            /** @var \MiW16\Results\Entity\User $usuario */
+            $usuario = $em
+                ->getRepository('MiW16\Results\Entity\User')
+                ->findOneById($data['user']['id']);
+            if(empty($usuario)){
+                $newResponse = $response->withStatus(404);
+                $datos = array(
+                    'code' => 404,
+                    'message' => 'User not found'
+                );
+                return $this->renderer->render($newResponse, 'message.phtml', $datos);
+            }
+            $result->setResult($data['result']);
+            $result->setUser($usuario);
+            $result->setTime(new DateTime($data['time']));
+            $em->persist($result);
+            $em->flush();
+        }
+        $newResponse = $response->withStatus(200);
         return $newResponse;
     }
 )->setName('miw_post_results');
-

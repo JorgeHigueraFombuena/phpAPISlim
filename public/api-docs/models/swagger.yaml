@@ -99,12 +99,16 @@ paths:
       responses:
         '200':
           description: '`Ok` User previously existed and is now updated'
+        '422':
+          description: '`Unprocessable entity` some data needed is miss'
+          schema:
+            $ref: '#/definitions/Message'
         '400':
-          description: '`Bad Request` User name or e-mail already exists'
+          description: '`Bad Request` Bad format of date.'
           schema:
             $ref: '#/definitions/Message'
         '404':
-          description: '`Not Found` The user could not be found'
+          description: '`Not Found` The user or result could not be found'
           schema:
             $ref: '#/definitions/Message'
     delete:
@@ -253,7 +257,9 @@ definitions:
     example:
       result: 10
       user:
-        $ref: '#/definitions/UserAux/example'
+        id: 123
+        username: User_name
+        email: User_email@example.com
       time: 2016-12-23 12:30:30
   ResultData:
     properties:
@@ -319,6 +325,9 @@ definitions:
       email:
         description: User email
         type: string
+      password:
+        description: User password
+        type: string
       enabled:
         description: Denotes if user is enabled
         type: boolean
@@ -333,6 +342,7 @@ definitions:
       id: 123
       username: User_name
       email: User_email@example.com
+      password: userpassword
       enabled: true
       last_login: 2016-12-23 12:30:30
       token: $2$6a7f5b9e15f9c4a51495
