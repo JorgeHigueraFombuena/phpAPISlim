@@ -21,7 +21,6 @@ $app->get(
             );
             return $this->renderer->render($newResponse, 'message.phtml', $datos);
         }
-        var_dump($usuarios);
         return $response->withJson(array('users' => $usuarios));
     }
 )->setName('miw_cget_users');
@@ -114,17 +113,43 @@ $app->post(
     function ($request, $response, $args) {
         $this->logger->info('POST \'/users\'');
         $data = json_decode($request->getBody(), true); // parse the JSON into an assoc. array
-        ob_start();
-        var_dump($data);
-        $dataDump = ob_end_clean();
-        $this->logger->info('POST \'/users\' : data = ' . $dataDump);
+
+        $em = getEntityManager();
+        if(!isset($data['username'])
+        || !isset($data['email'])
+        || !isset($data['password'])){
+            $newResponse = $response->withStatus(422);
+            $datos = array (
+                'code' => 422,
+                'message' => '`Unprocessable entity` Username, e-mail or password is left out'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        }
+        else{
+            $usuarioUsername = $em
+                ->getRepository('MiW16\Results\Entity\User')
+                ->findOneBy(array( 'username' => $args['username']));
+            $usuarioEmail = $em
+                ->getRepository('MiW16\Results\Entity\User')
+                ->findOneBy(array('email' => $args['email']));
+
+            if(!empty($usuarioEmail)
+            || !empty($usuarioUsername)){
+                $newResponse = $response->withStatus(422);
+                $datos = array (
+                    'code' => 400,
+                    'message' => '`Bad Request` Username or email already exists.'
+                );
+                return $this->renderer->render($newResponse, 'message.phtml', $datos);
+            }
+
+        }
 
         /** @var \MiW16\Results\Entity\User $usuario */
         $usuario = new \MiW16\Results\Entity\User();
         $usuario->setUsername($data['username']);
         $usuario->setEmail($data['email']);
         $usuario->setPassword($data['password']);
-        $em = getEntityManager();
         $em->persist($usuario);
         $em->flush();
         $newResponse = $response->withStatus(201);
