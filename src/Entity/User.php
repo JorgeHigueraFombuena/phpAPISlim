@@ -230,8 +230,7 @@ class User implements \JsonSerializable
             'username'      => utf8_encode($this->username),
             'email'         => utf8_encode($this->email),
             'enabled'       => $this->enabled,
-            'last_login'    => $this->lastLogin->format('Y-m-d H:i:s'),
-            'token'         => $this->token
+            'last_login'    => $this->lastLogin->format('Y-m-d H:i:s')
         );
     }
 }

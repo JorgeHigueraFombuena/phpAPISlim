@@ -325,9 +325,6 @@ definitions:
       email:
         description: User email
         type: string
-      password:
-        description: User password
-        type: string
       enabled:
         description: Denotes if user is enabled
         type: boolean
@@ -335,17 +332,12 @@ definitions:
         description: Last login of the user
         type: string
         format: date
-      token:
-        description: User token
-        type: string
     example:
       id: 123
       username: User_name
       email: User_email@example.com
-      password: userpassword
       enabled: true
       last_login: 2016-12-23 12:30:30
-      token: $2$6a7f5b9e15f9c4a51495
   UserAux:
     required:
       - id
