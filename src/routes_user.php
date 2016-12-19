@@ -53,6 +53,50 @@ $app->get(
 /**
  * @var \Slim\App $app
  */
+$app->get(
+    '/users/{id:[0-9]+}/results',
+    function ($request, $response, $args) {
+        $this->logger->info('GET \'/users/' . $args['id'] . '\'');
+        $this->logger->info('GET \'/users/' . $args['id'] . '\' : id = ' . $args['id']);
+        $usuario = getEntityManager()
+            ->getRepository('MiW16\Results\Entity\User')
+            ->findOneById($args['id']);
+
+        if (empty($usuario)) {  // 404 - User id. not found
+            $newResponse = $response->withStatus(404);
+            $datos = array(
+                'code' => 404,
+                'message' => 'User not found'
+            );
+            return $this->renderer->render($newResponse, 'message.phtml', $datos);
+        }
+        else {
+            $results = getEntityManager()
+                ->getRepository('MiW16\Results\Entity\Result')
+                ->findOneBy(array("user" => $args['id']));
+            if(empty($results)){
+                $newResponse = $response->withStatus(404);
+                $datos = array(
+                    'code' => 404,
+                    'message' => 'User doesn\'t have results'
+                );
+                return $this->renderer->render($newResponse, 'message.phtml', $datos);
+            }
+            return $response->withJson(array('results' => $results));
+        }
+
+        $newResponse = $response->withStatus(400);
+        $datos = array(
+            'code' => 400,
+            'message' => '`Bad Request` Bad data given.'
+        );
+        return $this->renderer->render($newResponse, 'message.phtml', $datos);
+    }
+)->setName('miw_get_users');
+
+/**
+ * @var \Slim\App $app
+ */
 $app->delete(
     '/users/{id:[0-9]+}',
     function ($request, $response, $args) {

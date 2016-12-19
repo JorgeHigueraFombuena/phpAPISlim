@@ -237,6 +237,28 @@ paths:
           description: User has result. The result must be deleted before
           schema:
             $ref: '#/definitions/Message'
+  /users/{userId}/results:
+    get:
+      tags:
+        - Users
+      summary: Returns all results
+      description: Returns all results from the system that the user has access to.
+      operationId: miw_get_results_of_user
+      parameters:
+        - $ref: '#/parameters/userId'
+      responses:
+        '200':
+          description: Result array response
+          schema:
+            $ref: '#/definitions/ResultsArray'
+        '400':
+          description: '`Bad Request` Bad data given.'
+          schema:
+            $ref: '#/definitions/Message'
+        '404':
+          description: Result object not found
+          schema:
+            $ref: '#/definitions/Message'
 definitions:
   Result:
     required:
